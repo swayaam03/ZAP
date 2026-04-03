@@ -1,0 +1,84 @@
+@import "tailwindcss";
+@source "../src";
+
+@theme {
+  --color-brand-50:  #f0fdfa;
+  --color-brand-100: #ccfbf1;
+  --color-brand-200: #99f6e4;
+  --color-brand-300: #5eead4;
+  --color-brand-400: #2dd4bf;
+  --color-brand-500: #14b8a6;
+  --color-brand-600: #0d9488;
+  --color-brand-700: #0f766e;
+  --color-brand-800: #115e59;
+  --color-brand-900: #134e4a;
+
+  --color-surface: #ffffff;
+  --color-surface-alt: #f7f6f3;
+
+  --color-ink: #1a1a18;
+  --color-ink-sub: #6b6860;
+  --color-ink-dim: #a8a69f;
+
+  --font-sans: Inter, "DM Sans", system-ui, sans-serif;
+  --font-display: Fraunces, Georgia, serif;
+
+  --shadow-card: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-modal: 0 20px 60px rgba(0,0,0,0.12);
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@layer base {
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body, #root { height: 100%; }
+  body {
+    background-color: #f7f6f3;
+    color: #1a1a18;
+    font-family: Inter, "DM Sans", system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+  }
+  ::-webkit-scrollbar { width: 4px; }
+  ::-webkit-scrollbar-thumb { background: #a8a69f; border-radius: 9999px; }
+  input[type="range"], input[type="checkbox"] { accent-color: #0d9488; }
+}
+
+@layer utilities {
+  .font-display   { font-family: Fraunces, Georgia, serif; }
+  .text-ink       { color: #1a1a18; }
+  .text-ink-sub   { color: #6b6860; }
+  .text-ink-dim   { color: #a8a69f; }
+  .bg-surface     { background-color: #ffffff; }
+  .bg-surface-alt { background-color: #f7f6f3; }
+  .shadow-card    { box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 1px 2px rgba(0,0,0,0.04); }
+  .shadow-modal   { box-shadow: 0 20px 60px rgba(0,0,0,0.12); }
+
+  .priority-urgent { border-left: 4px solid #f87171; }
+  .priority-high   { border-left: 4px solid #fb923c; }
+  .priority-medium { border-left: 4px solid #14b8a6; }
+  .priority-low    { border-left: 4px solid #d1d5db; }
+
+  .skeleton {
+    background: #e5e7eb;
+    border-radius: 0.75rem;
+    animation: pulse 2s cubic-bezier(0.4,0,0.6,1) infinite;
+  }
+  .animate-slide-up { animation: slideUp 0.35s cubic-bezier(0.4,0,0.2,1); }
+  .animate-fade-in  { animation: fadeIn 0.25s ease; }
+}
