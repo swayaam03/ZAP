@@ -1,12 +1,13 @@
 import { NavLink } from 'react-router-dom'
-import { LayoutDashboard, BarChart2, Lightbulb, Bot, LogOut, Settings } from 'lucide-react'
+import { LayoutDashboard, BarChart2, Lightbulb, Bot, LogOut, Settings, Brain } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 
 const NAV = [
-  { to: '/dashboard',           icon: LayoutDashboard, label: 'Today',    end: true  },
-  { to: '/dashboard/progress',  icon: BarChart2,       label: 'Progress', end: false },
-  { to: '/dashboard/insights',  icon: Lightbulb,       label: 'Insights', end: false },
-  { to: '/dashboard/agents',    icon: Bot,             label: 'Agents',   end: false },
+  { to: '/dashboard',           icon: LayoutDashboard, label: 'Today',     end: true  },
+  { to: '/dashboard/progress',  icon: BarChart2,       label: 'Progress',  end: false },
+  { to: '/dashboard/insights',  icon: Lightbulb,       label: 'Insights',  end: false },
+  { to: '/dashboard/agents',    icon: Bot,             label: 'Agents',    end: false },
+  { to: '/dashboard/ai-solver', icon: Brain,           label: 'AI Solver', end: false },
 ]
 
 const AREA_COLORS = {

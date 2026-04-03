@@ -6,11 +6,12 @@ import Header        from './Header'
 import ProfileModal  from '../profile/ProfileModal'
 
 const TITLES = {
-  '/dashboard':           'Today',
-  '/dashboard/tasks':     'Tasks',
-  '/dashboard/progress':  'Progress',
-  '/dashboard/insights':  'Insights',
-  '/dashboard/agents':    'AI Agents',
+  '/dashboard':            'Today',
+  '/dashboard/tasks':      'Tasks',
+  '/dashboard/progress':   'Progress',
+  '/dashboard/insights':   'Insights',
+  '/dashboard/agents':     'AI Agents',
+  '/dashboard/ai-solver':  'AI Doubt Solver',
 }
 
 export default function Layout() {
