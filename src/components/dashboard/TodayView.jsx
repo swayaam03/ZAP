@@ -13,15 +13,15 @@ import AIAlert from './AIAlert'
 import SmartCalendar from './SmartCalendar'
 
 const AREA_COLORS = {
-  deepWork: '#14b8a6', health: '#10b981', learning: '#8b5cf6',
-  relationships: '#f59e0b', creativity: '#ec4899', finance: '#3b82f6',
+  deepWork:'#14b8a6', health:'#10b981', learning:'#8b5cf6',
+  relationships:'#f59e0b', creativity:'#ec4899', finance:'#3b82f6',
 }
 
-const INSIGHT_MESSAGES = [
-  "Completing a health task first boosts your learning completion by 28% — based on your pattern data.",
-  "You're most consistent before 11 AM. Protect that window today.",
-  "Your streak is your strongest asset right now. One task at a time.",
-  "Tasks with clear descriptions get completed 2x more often. Add context when you can.",
+const INSIGHT_MSGS = [
+  'Completing a health task first boosts your learning completion — based on your pattern data.',
+  "You're most consistent in the morning. Protect that window today.",
+  'Your streak is your strongest asset right now. One task at a time.',
+  'Tasks with clear descriptions get completed 2× more often.',
 ]
 
 export default function TodayView() {
@@ -37,6 +37,7 @@ export default function TodayView() {
   const hour = new Date().getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
   const firstName = profile?.displayName?.split(' ')[0] || 'there'
+  
   const xp = profile?.xp || 0
   const level = xpToLevel(xp)
   const progress = levelProgress(xp)
@@ -46,9 +47,10 @@ export default function TodayView() {
   const activeTasks = tasks.filter(t => !(t.completedDates || []).includes(today))
   const completedToday = tasks.filter(t => (t.completedDates || []).includes(today))
   const dailyTarget = profile?.goals?.dailyTaskTarget || 5
+  const totalToday = activeTasks.length + completedToday.length
   const pct = Math.min((completedToday.length / dailyTarget) * 100, 100)
 
-  const insight = INSIGHT_MESSAGES[new Date().getDate() % INSIGHT_MESSAGES.length]
+  const insight = INSIGHT_MSGS[new Date().getDate() % INSIGHT_MSGS.length]
 
   const handleComplete = async (taskId) => {
     const earned = await finishTask(taskId)
@@ -58,19 +60,12 @@ export default function TodayView() {
     }
   }
 
-  const handleEdit = (task) => {
-    setEditingTask(task)
-    setModalOpen(true)
-  }
-
-  const handleModalClose = () => {
-    setModalOpen(false)
-    setEditingTask(null)
-  }
+  const handleEdit = (task) => { setEditingTask(task); setModalOpen(true) }
+  const handleModalClose = () => { setModalOpen(false); setEditingTask(null) }
 
   const card = {
-    background: '#ffffff', border: '1px solid #f1f5f9',
-    borderRadius: 14, boxShadow: '0 1px 3px rgba(0,0,0,0.04)',
+    background:'#ffffff', border:'1px solid #f1f5f9',
+    borderRadius:14, boxShadow:'0 1px 3px rgba(0,0,0,0.04)',
   }
 
   return (
@@ -97,7 +92,7 @@ export default function TodayView() {
             padding: '6px 14px', borderRadius: 99, background: '#f0fdfa',
             border: '1px solid #99f6e4', fontSize: 12, fontWeight: 500, color: '#0d9488',
           }}>
-            {completedToday.length} of {dailyTarget} complete
+            {completedToday.length} of {totalToday || 0} complete
           </div>
         </div>
       </motion.div>
@@ -128,8 +123,8 @@ export default function TodayView() {
       {/* Stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 20 }}>
         {[
-          { label: 'Current streak', value: streak > 0 ? `🔥 ${streak}` : '—' },
-          { label: 'XP total', value: xp },
+          { label: 'Current streak', value: streak > 0 ? `🔥 ${streak}d` : '—' },
+          { label: 'XP total', value: xp.toLocaleString() },
           { label: 'Level', value: `${level} · ${getLevelTitle(level)}` },
         ].map((s, i) => (
           <motion.div
@@ -201,6 +196,7 @@ export default function TodayView() {
         </div>
       </div>
 
+      {/* Task list */}
       {loading ? (
         <div style={{ display: 'flex', flexDirection: 'column', gap: 8 }}>
           {[1, 2, 3].map(i => <div key={i} style={{ height: 64, background: '#e2e8f0', borderRadius: 12, animation: 'pulse 2s infinite' }} />)}
@@ -235,26 +231,26 @@ export default function TodayView() {
                 />
               </div>
             ))}
-
-            {/* Completed tasks */}
-            {completedToday.length > 0 && (
-              <div>
-                <p style={{ fontSize: 11, color: '#94a3b8', margin: '16px 0 8px', fontWeight: 600, letterSpacing: '0.08em' }}>
-                  COMPLETED TODAY
-                </p>
-                {completedToday.map(task => (
-                  <div key={task.id} style={{ marginBottom: 8 }}>
-                    <TaskCard
-                      task={task}
-                      onComplete={handleComplete}
-                      onEdit={handleEdit}
-                      onDelete={removeTask}
-                    />
-                  </div>
-                ))}
-              </div>
-            )}
           </AnimatePresence>
+
+          {/* Completed tasks */}
+          {completedToday.length > 0 && (
+            <div>
+              <p style={{ fontSize: 11, color: '#94a3b8', margin: '16px 0 8px', fontWeight: 600, letterSpacing: '0.08em' }}>
+                COMPLETED TODAY
+              </p>
+              {completedToday.map(task => (
+                <div key={task.id} style={{ marginBottom: 8 }}>
+                  <TaskCard
+                    task={task}
+                    onComplete={handleComplete}
+                    onEdit={handleEdit}
+                    onDelete={removeTask}
+                  />
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       )}
 
@@ -318,8 +314,12 @@ export default function TodayView() {
       />
 
       <style>{`
-        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
-        @keyframes spin   { to{transform:rotate(360deg)} }
+        @keyframes shimmer {
+          0%   { background-position: -200% 0; }
+          100% { background-position:  200% 0; }
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+        @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:.5} }
       `}</style>
       </div>
 
