@@ -7,8 +7,10 @@ import { useTasks } from '../../hooks/useTasks'
 import { useStreaks } from '../../hooks/useStreaks'
 import TaskCard from '../tasks/TaskCard'
 import TaskModal from '../tasks/TaskModal'
+import WhatIfSimulatorModal from './WhatIfSimulatorModal'
 import { levelProgress, xpToNextLevel, getLevelTitle, xpToLevel } from '../../utils/xpCalculator'
 import AIAlert from './AIAlert'
+import SmartCalendar from './SmartCalendar'
 
 const AREA_COLORS = {
   deepWork: '#14b8a6', health: '#10b981', learning: '#8b5cf6',
@@ -27,6 +29,7 @@ export default function TodayView() {
   const { tasks, loading, finishTask, removeTask, editTask, addTask } = useTasks()
   const { streaks } = useStreaks()
   const [modalOpen, setModalOpen] = useState(false)
+  const [simulatorOpen, setSimulatorOpen] = useState(false)
   const [editingTask, setEditingTask] = useState(null)
   const [xpFlash, setXpFlash] = useState(null)
 
@@ -176,6 +179,16 @@ export default function TodayView() {
             Planning Agent
           </span>
           <button
+            onClick={() => setSimulatorOpen(true)}
+            style={{
+              display: 'flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 8,
+              background: '#fef3c7', border: '1px solid #fde68a', color: '#d97706', fontSize: 12,
+              fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+            }}
+          >
+            🔮 Simulate Delay
+          </button>
+          <button
             onClick={() => { setEditingTask(null); setModalOpen(true) }}
             style={{
               display: 'flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 8,
@@ -297,6 +310,12 @@ export default function TodayView() {
       </AnimatePresence>
 
       <TaskModal open={modalOpen} onClose={handleModalClose} task={editingTask} />
+      <WhatIfSimulatorModal 
+        open={simulatorOpen} 
+        onClose={() => setSimulatorOpen(false)} 
+        tasks={tasks}
+        onApply={editTask}
+      />
 
       <style>{`
         @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
@@ -307,6 +326,7 @@ export default function TodayView() {
       {/* Right Column / Sidebar */}
       <div style={{ width: 320, flexShrink: 0, paddingTop: 12 }}>
         <AIAlert activeTasks={activeTasks} />
+        <SmartCalendar tasks={tasks} />
       </div>
     </div>
   )

@@ -90,14 +90,12 @@ export default function AIAlert({ activeTasks }) {
           <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
             <button 
               onClick={() => {
-                const elements = document.querySelectorAll('.task-card-element');
+                const elements = document.querySelectorAll('.active-task');
                 elements.forEach(el => {
-                  el.style.transition = 'box-shadow 0.3s, transform 0.3s';
-                  el.style.boxShadow = '0 0 0 2px #ea580c, 0 4px 14px rgba(234, 88, 12, 0.15)';
-                  el.style.transform = 'translateX(4px)';
+                  el.style.transition = 'box-shadow 0.4s ease';
+                  el.style.boxShadow = '0 6px 20px rgba(154, 0, 0, 0.2)'; // Very light red shadow
                   setTimeout(() => {
                     el.style.boxShadow = '0 1px 3px rgba(0,0,0,0.04)';
-                    el.style.transform = 'translateX(0)';
                   }, 1500)
                 })
               }}
