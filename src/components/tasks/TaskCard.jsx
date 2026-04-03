@@ -53,7 +53,7 @@ export default function TaskCard({
   return (
     <motion.div
       layout
-      className="task-card-element"
+      className={`task-card-element ${!completed ? 'active-task' : ''}`}
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, x: -20 }}

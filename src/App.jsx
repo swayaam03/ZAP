@@ -1,5 +1,6 @@
 import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './contexts/AuthContext'
+import { ThemeProvider } from './contexts/ThemeContext'
 import { useAuth } from './hooks/useAuth'
 
 import Auth          from './pages/Auth'
@@ -17,16 +18,17 @@ function PrivateRoute({ children }) {
   const { user, loading } = useAuth()
   if (loading) return (
     <div style={{
-      minHeight: '100vh', display: 'flex', alignItems: 'center',
-      justifyContent: 'center', background: '#f8fafc',
+      minHeight:'100vh', display:'flex', alignItems:'center',
+      justifyContent:'center', background:'#f8fafc',
     }}>
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign:'center' }}>
         <div style={{
-          width: 32, height: 32, border: '2px solid #14b8a6',
-          borderTopColor: 'transparent', borderRadius: '50%',
-          animation: 'spin 0.7s linear infinite', margin: '0 auto 12px',
+          width:32, height:32, border:'2px solid #14b8a6',
+          borderTopColor:'transparent', borderRadius:'50%',
+          animation:'spin 0.7s linear infinite', margin:'0 auto 12px',
         }} />
-        <p style={{ fontSize: 13, color: '#64748b' }}>Loading…</p>
+        <p style={{ fontSize:13, color:'#64748b' }}>Loading…</p>
+        <style>{`@keyframes spin{to{transform:rotate(360deg)}}`}</style>
       </div>
     </div>
   )
@@ -50,7 +52,7 @@ function PublicRoute({ children }) {
 function AppRoutes() {
   return (
     <Routes>
-      <Route path="/" element={<Home />} />
+      <Route path="/"    element={<Home />} />
       <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
       <Route path="/onboarding" element={<OnboardingRoute><Onboarding /></OnboardingRoute>} />
 
@@ -71,7 +73,9 @@ function AppRoutes() {
 export default function App() {
   return (
     <AuthProvider>
-      <AppRoutes />
+      <ThemeProvider>
+        <AppRoutes />
+      </ThemeProvider>
     </AuthProvider>
   )
 }
