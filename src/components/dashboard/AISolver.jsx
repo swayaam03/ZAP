@@ -1,10 +1,12 @@
 import { useState, useRef, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Brain, Send, Save, CheckCircle2, AlertCircle, FileText, Activity, Paperclip, X } from 'lucide-react'
+import { Brain, Send, Save, CheckCircle2, AlertCircle, FileText, Activity } from 'lucide-react'
 import { useAuth } from '../../hooks/useAuth'
 import { useTasks } from '../../hooks/useTasks'
 import { useNotes } from '../../hooks/useNotes'
 import { generateInsight } from '../../services/aiService'
+
+import ReactMarkdown from 'react-markdown'
 
 export default function AISolver() {
   const { profile } = useAuth()
@@ -15,7 +17,7 @@ export default function AISolver() {
     {
       id: 'greeting',
       role: 'assistant',
-      content: `Hello ${profile?.displayName?.split(' ')[0] || 'there'}! I'm your AI Doubt Solver. I can answer questions using your Notes and Tasks as context. What are you stuck on?`,
+      content: `Hello ${profile?.displayName?.split(' ')[0] || 'there'}! I'm your AI Doubt Solver. What are you stuck on?`,
       timestamp: new Date()
     }
   ])
@@ -23,8 +25,6 @@ export default function AISolver() {
   const [isTyping, setIsTyping] = useState(false)
   const [contextUsed, setContextUsed] = useState([])
   const [behaviorInsight, setBehaviorInsight] = useState(null)
-  const [attachedFiles, setAttachedFiles] = useState([])
-  const fileInputRef = useRef(null)
   
   const chatEndRef = useRef(null)
 
@@ -51,7 +51,6 @@ export default function AISolver() {
     )
 
     const contextItems = [
-      ...attachedFiles.map(f => ({ type: 'file', text: f.name })),
       ...matchedNotes.map(n => ({ type: 'note', text: n.content.substring(0, 50) + '...' })),
       ...matchedTasks.map(n => ({ type: 'task', text: n.title, focusArea: n.focusArea }))
     ]
@@ -74,10 +73,7 @@ export default function AISolver() {
     setBehaviorInsight(insight)
 
     // 3. Generate AI Response
-    let aiResponse = await generateInsight(query, contextItems, attachedFiles)
-    
-    // Clear files after sending
-    setAttachedFiles([])
+    let aiResponse = await generateInsight(query, contextItems)
 
     setMessages(prev => [...prev, {
       id: Date.now().toString(),
@@ -104,19 +100,6 @@ export default function AISolver() {
   const handleSaveNote = async (text) => {
     await addNote(text, ['AI-saved'])
     // Just a visual feedback could be added here
-  }
-
-  const handleFileChange = (e) => {
-    if (e.target.files && e.target.files.length > 0) {
-      const file = e.target.files[0]
-      if (!attachedFiles.find(f => f.name === file.name)) {
-        setAttachedFiles(prev => [...prev, file])
-      }
-    }
-  }
-
-  const removeFile = (fileName) => {
-    setAttachedFiles(prev => prev.filter(f => f.name !== fileName))
   }
 
   return (
@@ -155,7 +138,18 @@ export default function AISolver() {
                 border: msg.role === 'assistant' ? '1px solid #e2e8f0' : 'none',
                 position: 'relative', group: 'msg'
               }}>
-                {msg.content}
+                {msg.role === 'assistant' ? (
+                  <ReactMarkdown
+                    components={{
+                       p: ({node, ...props}) => <p style={{margin: '0 0 8px 0'}} {...props} />,
+                       strong: ({node, ...props}) => <strong style={{fontWeight: 700, color: '#0f172a'}} {...props} />
+                    }}
+                  >
+                    {msg.content}
+                  </ReactMarkdown>
+                ) : (
+                  msg.content
+                )}
                 
                 {msg.role === 'assistant' && msg.id !== 'greeting' && (
                   <button 
@@ -195,52 +189,10 @@ export default function AISolver() {
 
         {/* Chat Input */}
         <div style={{ padding: '16px 24px', borderTop: '1px solid #f1f5f9', background: '#fff' }}>
-          
-          {/* File Attachments Display */}
-          {attachedFiles.length > 0 && (
-            <div style={{ display: 'flex', gap: 8, marginBottom: 10, flexWrap: 'wrap' }}>
-              {attachedFiles.map(f => (
-                <div key={f.name} style={{
-                  display: 'flex', alignItems: 'center', gap: 6, padding: '4px 8px',
-                  background: '#f1f5f9', borderRadius: 6, fontSize: 11, color: '#475569',
-                  border: '1px solid #e2e8f0'
-                }}>
-                  <Paperclip size={10} color="#64748b" />
-                  <span style={{ maxWidth: 120, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{f.name}</span>
-                  <button 
-                    onClick={() => removeFile(f.name)}
-                    style={{ background: 'none', border: 'none', cursor: 'pointer', padding: 0, display: 'flex', color: '#94a3b8' }}
-                  >
-                    <X size={12} />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
           <div style={{ 
             display: 'flex', gap: 12, alignItems: 'flex-end', 
             background: '#f8fafc', padding: '10px 14px', borderRadius: 16, border: '1px solid #e2e8f0' 
           }}>
-            <button
-              onClick={() => fileInputRef.current?.click()}
-              style={{
-                background: 'none', border: 'none', cursor: 'pointer', padding: '8px 4px',
-                color: '#94a3b8', display: 'flex', alignItems: 'center', transition: 'color 0.2s'
-              }}
-              onMouseEnter={e => e.currentTarget.style.color = '#3b82f6'}
-              onMouseLeave={e => e.currentTarget.style.color = '#94a3b8'}
-              title="Attach File (Note: Extracted text is NOT passed to the LLM as per settings)"
-            >
-              <Paperclip size={18} />
-            </button>
-            <input 
-              type="file" 
-              ref={fileInputRef} 
-              style={{ display: 'none' }} 
-              accept=".pdf,.doc,.docx,.txt"
-              onChange={handleFileChange}
-            />
             <textarea  
               value={input}
               onChange={e => setInput(e.target.value)}
@@ -314,7 +266,7 @@ export default function AISolver() {
               {contextUsed.map((item, idx) => (
                 <div key={idx} style={{ 
                   padding: '12px', background: '#f8fafc', borderRadius: 10, border: '1px solid #f1f5f9',
-                  borderLeft: `3px solid ${item.type === 'note' ? '#0ea5e9' : (item.type === 'file' ? '#8b5cf6' : '#f59e0b')}` 
+                  borderLeft: `3px solid ${item.type === 'note' ? '#0ea5e9' : '#f59e0b'}` 
                 }}>
                   <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: 4 }}>
                     <span style={{ fontSize: 10, fontWeight: 700, color: '#64748b', textTransform: 'uppercase' }}>{item.type}</span>
