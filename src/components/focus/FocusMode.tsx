@@ -2,15 +2,15 @@ import React, { useEffect, useState } from 'react';
 import { useFocusSession } from '../../hooks/useFocusSession';
 
 const PRESETS = [
-  { label: 'Short', minutes: 15, icon: '🌱' },
-  { label: 'Pomodoro', minutes: 25, icon: '🍅' },
-  { label: 'Deep Work', minutes: 50, icon: '🔥' },
+  { label: 'Short Break', minutes: 5, icon: '' },
+  { label: 'Pomodoro', minutes: 25, icon: '' },
+  { label: 'Deep Work', minutes: 50, icon: '' },
   { label: 'Custom', minutes: 0, icon: '⚙️' },
 ];
 
 const BREAKS = [
-  { label: 'Short Break', minutes: 5, icon: '☕' },
-  { label: 'Long Break', minutes: 15, icon: '🧘' },
+  { label: 'Short Break', minutes: 5, icon: '' },
+  { label: 'Long Break', minutes: 15, icon: '' },
 ];
 
 type Mode = 'focus' | 'shortBreak' | 'longBreak';
@@ -77,7 +77,7 @@ export default function FocusMode({ onXPEarned, onExit }: { onXPEarned: () => vo
       </button>
 
       <div className="text-center">
-        <h1 className="font-serif text-4xl text-gray-800 mb-2">⚡ Focus Mode</h1>
+        <h1 className="font-serif text-4xl text-gray-800 mb-2">Focus Mode</h1>
         <p className="text-gray-400 mb-6">Stay present. Stay productive.</p>
 
         {/* Mode switcher */}
@@ -88,7 +88,7 @@ export default function FocusMode({ onXPEarned, onExit }: { onXPEarned: () => vo
               mode === 'focus' ? 'bg-teal-500 text-white' : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
             }`}
           >
-            🎯 Focus
+             Focus
           </button>
           {BREAKS.map((b) => (
             <button
@@ -164,7 +164,7 @@ export default function FocusMode({ onXPEarned, onExit }: { onXPEarned: () => vo
               onClick={handleStart}
               className={`px-8 py-4 ${btnColor} text-white rounded-xl text-lg font-medium transition-colors duration-200 shadow-sm`}
             >
-              {isBreak ? '😌 Start Break' : 'Start Session'}
+              {isBreak ? 'Start Break' : 'Start Session'}
             </button>
           ) : (
             <button
@@ -184,8 +184,8 @@ export default function FocusMode({ onXPEarned, onExit }: { onXPEarned: () => vo
 
         <p className="mt-8 text-gray-400 text-sm">
           {isBreak
-            ? '🧘 Take a breather — you earned it!'
-            : <>Complete the session to earn <span className="text-teal-600 font-medium">XP</span> ⭐</>
+            ? 'Take a breather, you have earned it!'
+            : <>Complete the session to earn <span className="text-teal-600 font-medium">XP</span> </>
           }
         </p>
       </div>

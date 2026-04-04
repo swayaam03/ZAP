@@ -1,125 +1,142 @@
-# ZAP  🧠
+# ZAP — Smart Deadline Planner for Students 
 
-> AI-powered habit-tracking platform for Hackanova 5.0  
-> Theme: "Break the Loop, Create the Future" — Agentic AI Track
+> **"Deadlines messed up? We ZAP it."**
 
-## ✨ Features
+ZAP is a student-focused productivity enhancement layer, Smart Deadline Planner for Students. It adds academic planning, deadline management, zero-clash scheduling, it detects procrastination by students and has AI-powered study assistance.
 
-- 🔐 **Firebase Authentication** — Email/Password + Google Sign-In
-- 📋 **Task Management** — Full CRUD with categories (Work, Health, Learning, Relationships)
-- 🔥 **Streak System** — Per-category streaks with Ice Streak protection
-- 🎮 **Gamification** — XP, levels, milestones, progress tracking
-- 📊 **Dashboard** — Today view, Progress analytics, Insights
-- 🤖 **AI Agent Architecture** — Pluggable agent system (Quest Master, Companion Bot, Stats Analyst)
-- 👤 **Profile System** — 6-tab profile modal (Account, Security, Photo, Preferences, Goals, Stats)
+---
 
-## 🛠️ Tech Stack
+## 🚀 Quick Start
 
-| Layer | Technology |
-|-------|-----------|
-| Frontend | React 18 + Vite |
-| Styling | Tailwind CSS + Framer Motion |
-| Backend | Firebase (Auth, Firestore, Storage) |
-| Routing | React Router DOM v6 |
-| Icons | Lucide React |
-| Date Utils | date-fns |
+### Prerequisites
+- Node.js 18+ (`node -v`)
+- npm (`npm -v`)
+- Firebase account
 
-## Prerequisites
+### Installation
 
-- Node.js v18 or higher
-- Firebase account (free tier works)
-- VS Code (recommended)
+# 1. Clone the repository
+git clone https://github.com/aarushi2512/ZAP.git
+cd ZAP
 
-## 🚀 Setup Instructions
-
-### 1. Clone the repository
-```bash
-git clone https://github.com/YOUR_USERNAME/questmind.git
-cd questmind
-```
-
-### 2. Install dependencies
-```bash
+# 2. Install dependencies
 npm install
-```
 
-### 3. Configure Firebase
-
-**a) Create Firebase project:**
-1. Go to https://console.firebase.google.com
-2. Create new project named `questmind`
-3. Enable Authentication → Email/Password + Google
-4. Create Firestore Database (test mode)
-5. Enable Storage (test mode)
-
-**b) Get your config:**
-1. Project Settings → General → Your apps → Web app (`</>`)
-2. Register app name `questmind-web`
-3. Copy the config values
-
-**c) Create environment file:**
-```bash
+# 3. Create .env file (copy from .env.example)
 cp .env.example .env
-```
-Open `.env` and fill in your Firebase values.
 
-### 4. Run development server
-```bash
+# 4. Fill in your Firebase credentials in .env
+
+# 5. Start development server
 npm run dev
-```
-Open http://localhost:5173
 
-### 5. Build for production
-```bash
+
+📦 Project Structure
+ZAP/
+├── src/
+│   ├── components/
+│   │   ├── auth/           # Login, Register, Onboarding
+│   │   ├── dashboard/      # TodayView, ProgressView, InsightsView, AgentsView
+│   │   ├── layout/         # Sidebar, Layout, Header
+│   │   └── tasks/          # TaskCard, TaskModal, TaskList
+│   ├── hooks/
+│   │   ├── useAuth.js      # Authentication hook
+│   │   ├── useTasks.js     # Task management hook
+│   │   ├── useStreaks.js   # Streak tracking hook
+│   │   ├── useStudentProfile.js  # ZAP: Student profile hook
+│   │   └── useClashDetection.js  # ZAP: Deadline clash detection
+│   ├── services/
+│   │   ├── taskService.js  # Firestore task operations
+│   │   └── aiService.js    # AI agent integrations
+│   ├── store/
+│   │   └── collabStore.ts  # ZAP: Collaboration state (Zustand)
+│   ├── types/
+│   │   ├── student.js      # ZAP: StudentProfile type definition
+│   │   └── task.js         # ZAP: Extended Task schema
+│   ├── utils/
+│   │   ├── xpCalculator.js # XP and level calculations
+│   │   └── validation.js   # Form validation utilities
+│   ├── contexts/
+│   │   ├── AuthContext.jsx
+│   │   └── ThemeContext.jsx
+│   ├── pages/
+│   │   ├── Auth.jsx
+│   │   ├── Home.jsx
+│   │   └── Onboarding.jsx
+│   ├── App.jsx             # Main app with routing
+│   └── main.jsx            # Entry point
+├── public/
+├── firestore.rules         # ZAP: Firestore security rules
+├── .env                    # Environment variables (DO NOT COMMIT)
+├── .env.example            # Environment template (SAFE TO COMMIT)
+├── package.json
+└── README.md
+
+🚀 Usage
+# Development
+npm run dev
+
+# Build for production
 npm run build
-```
 
-## 📁 Project Structure
-```
-src/
-├── components/       # Reusable UI components
-│   ├── ui/          # Atomic: Button, Card, Modal, Input, Avatar, Badge
-│   ├── layout/      # Sidebar, Header, Layout wrapper
-│   ├── auth/        # Login, Register, PasswordReset
-│   ├── dashboard/   # Dashboard views (Today, Progress, Insights)
-│   ├── tasks/       # Task CRUD components
-│   ├── streaks/     # Streak display components
-│   └── profile/     # Profile modal with 6 tabs
-├── contexts/        # React Context (AuthContext)
-├── hooks/           # Custom hooks (useAuth, useTasks, useStreaks)
-├── pages/           # Route-level page components
-├── services/        # Firebase service layer (authService, taskService, streakService)
-└── utils/           # Pure utility functions (xpCalculator, streakCalculator, validation)
-```
+# Preview production build
+npm run preview
 
-## 🤖 AI Agent Architecture
+🛠️ Tech Stack
+Frontend: React 18, Vite
+Styling: Tailwind CSS v4
+Backend: Firebase (Auth, Firestore)
+State Management: React Context, Zustand
+Routing: React Router v6
+Animations: Framer Motion
 
-QuestMind uses a pluggable agent system designed for future Agentic AI integration:
+📋 Features
+Block 1: Foundation 
+Student profile management
+Extended registration with academic details
+Firestore security rules
+Feature flag system
 
-| Agent | Role |
-|-------|------|
-| **Quest Master** | Breaks goals into adaptive micro-tasks |
-| **Companion Bot** | Motivational nudges, streak celebrations |
-| **Stats Analyst** | Pattern analysis, optimal timing suggestions |
-| **Reward Agent** | XP multipliers, achievement unlocks |
+Block 2: Zero-Clash Engine (In Progress)
+Deadline tracking
+Clash detection
+Priority management
 
-## 🏆 Gamification System
+Block 3: Collaboration 
+Group project management
+Shared notes and resources
+Team task assignments
+Role-based permissions
+Collaborative workspaces
 
-- **XP** — earned by completing tasks (scaled by priority & category)
-- **Levels** — every 500 XP = 1 level up (1–100)
-- **Streaks** — tracked per category; consecutive daily completions
-- **Ice Streak** — miss one day without losing your streak (24h window)
-- **Milestones** — special badges at 7, 30, 100-day streaks
+Block 4: Focus Mode ⏳
+Pomodoro timer integration
+Focus session tracking
+Distraction blocking
+Deep work scheduling
+Session analytics
 
-## Team
+Block 5: AI & Insights ⏳
+AI-powered study agents
+Predictive performance insights
+Personalized recommendations
+Smart rescheduling suggestions
+Learning pattern analysis
 
-**QuestMind** — St. Francis Institute of Technology  
-Hackanova 5.0 — Agentic AI Track
+🤝 Contributing
+Fork the repository
+Create your feature branch (git checkout -b feature/AmazingFeature)
+Commit your changes (git commit -m 'Add some AmazingFeature')
+Push to the branch (git push origin feature/AmazingFeature)
+Open a Pull Request
 
-## Contributing
+👥 Team
+Aarushi Arora 
+Swayam Kandarkar
+Dhvani Mistry
+Prishita Mali
 
-1. Fork the repo
-2. Create your feature branch: `git checkout -b feature/amazing-feature`
-3. Commit changes: `git commit -m 'Add amazing feature'`
-4. Push to branch: `git push origin feature/amazing-feature`
-5. Open a Pull Request
+
+🙏 Acknowledgments
+Icons by Lucide React
+UI components with Framer Motion
