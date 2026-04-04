@@ -32,7 +32,7 @@
  * @property {string} [description]
  * @property {string} focusArea
  * @property {'high'|'medium'|'low'} priority
- * @property {string} estimatedTime - Legacy QuestMind field ("30 min")
+ * @property {string} estimatedTime - Legacy ZAP field ("30 min")
  * @property {TaskSchedule} schedule
  * @property {string} startDate
  * @property {number} streak

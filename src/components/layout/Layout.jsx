@@ -17,7 +17,7 @@ const TITLES = {
 export default function Layout() {
   const location = useLocation()
   const [profileOpen, setProfileOpen] = useState(false)
-  const title = TITLES[location.pathname] || 'QuestMind'
+  const title = TITLES[location.pathname] || 'ZAP'
 
   return (
     <div style={{ display: 'flex', height: '100vh', overflow: 'hidden', background: '#f7f6f3' }}>

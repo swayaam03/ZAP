@@ -25,10 +25,10 @@ const ZAP_ENABLED = import.meta.env.VITE_ZAP_ENABLED === 'true'
 
 // Log which mode is active (check browser console)
 console.log(
-  '%c[QuestMind/ZAP]',
+  '%c[ZAP]',
   'font-weight:bold; color: #14b8a6;',
   `ZAP_ENABLED = ${ZAP_ENABLED}`,
-  ZAP_ENABLED ? '— Running as: ZAP — "Deadlines messed up? We ZAP it."' : '— Running as: QuestMind — Habit intelligence'
+  ZAP_ENABLED ? '— Running as: ZAP — "Deadlines messed up? We ZAP it."' : 'ZAP— Running as:  — Deadline Tracker'
 )
 // ── END ZAP Feature Flag ──────────────────────────────────────────────────
 
@@ -69,27 +69,23 @@ function PublicRoute({ children }) {
 
 function AppRoutes() {
   return (
-    <Routes>
-      <Route path="/"    element={<Home />} />
-      <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
-      <Route path="/onboarding" element={<OnboardingRoute><Onboarding /></OnboardingRoute>} />
+<Routes>
+  <Route path="/" element={<Home />} />
+  <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
+  <Route path="/onboarding" element={<OnboardingRoute><Onboarding /></OnboardingRoute>} />
 
-      <Route path="/dashboard" element={<PrivateRoute><Layout /></PrivateRoute>}>
-        <Route index           element={<TodayView    />} />
-        <Route path="tasks"    element={<TaskList     />} />
-        <Route path="progress" element={<ProgressView />} />
+  <Route path="/dashboard" element={<PrivateRoute><Layout /></PrivateRoute>}>
+    <Route index element={<TodayView />} />
+    <Route path="tasks" element={<TaskList />} />
+    <Route path="progress" element={<ProgressView />} />
+    <Route path="insights" element={<InsightsView />} />
+    <Route path="agents" element={<AgentsView />} />
+    <Route path="ai-solver" element={<AISolver />} />
+    {/* <Route path="notes" element={<NotesPage />} /> */} {/* Comment out if NotesPage doesn't exist */}
+  </Route>
 
-        <Route path="insights" element={<InsightsView />} />
-        <Route path="agents"   element={<AgentsView   />} />
-        <Route path="notes" element={<NotesPage />} />
-
-        <Route path="insights"  element={<InsightsView />} />
-        <Route path="agents"    element={<AgentsView   />} />
-        <Route path="ai-solver" element={<AISolver     />} />
-      </Route>
-
-      <Route path="*" element={<Navigate to="/" replace />} />
-    </Routes>
+  <Route path="*" element={<Navigate to="/" replace />} />
+</Routes>
   )
 }
 

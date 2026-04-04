@@ -14,8 +14,8 @@ export async function generateInsight(prompt, contextItems = []) {
     const model = genAI.getGenerativeModel({ model: "gemini-2.5-flash" })
     
     // Construct the context string
-    let systemContext = `You are the "AI Doubt Solver" inside a SaaS productivity app called QuestMind. 
-Your goal is to act as a personalized mentor and help the user by combining general knowledge with the specific context of their Notes and Tasks. Keep responses concise, supportive, and formatted cleanly in markdown.\n\n`
+    let systemContext = `You are the "AI Doubt Solver" inside a SaaS productivity app called ZAP. 
+Your goal is to act as a personalized mentor and help the user by combining general knowledge with the specific context of their Notes and Tasks. Keep responses concise, supportive, and formatted cleanly in markdown.\n\n`;
     
     if (contextItems.length > 0) {
       systemContext += `Here is context from the user's personal notes and tasks:\n`
