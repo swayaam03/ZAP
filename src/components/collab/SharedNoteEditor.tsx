@@ -1,11 +1,11 @@
 // src/components/collab/SharedNoteEditor.tsx
 import React, { useEffect, useRef, useState } from 'react';
-import { doc, onSnapshot, updateDoc, arrayUnion } from 'firebase/firestore';
+import { doc, onSnapshot, updateDoc, arrayUnion, deleteDoc } from 'firebase/firestore';
 import { db } from '../../firebase';
 import { useCollabStore } from '../../store/collabStore';
 
 export default function SharedNoteEditor({ userId }: { userId: string }) {
-  const { activeNote, updateNoteContent } = useCollabStore();
+  const { activeNote, updateNoteContent, setActiveNote } = useCollabStore();
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const [showShare, setShowShare]       = useState(false);
   const [shareEmail, setShareEmail]     = useState('');
@@ -64,6 +64,19 @@ export default function SharedNoteEditor({ userId }: { userId: string }) {
     }
   };
 
+  const handleDeleteNote = async () => {
+    if (!activeNote) return;
+    const confirmDelete = window.confirm('Are you sure you want to delete this note?');
+    if (!confirmDelete) return;
+
+    try {
+      await deleteDoc(doc(db, 'notes', activeNote.id));
+      setActiveNote(null);
+    } catch (err) {
+      console.error('Error deleting note:', err);
+    }
+  };
+
   const wordCount = activeNote?.content
     ? activeNote.content.trim().split(/\s+/).filter(Boolean).length
     : 0;
@@ -89,13 +102,21 @@ export default function SharedNoteEditor({ userId }: { userId: string }) {
             <h1 className="font-serif text-2xl text-gray-800">{activeNote.title}</h1>
             <p className="text-xs text-gray-400 mt-1">{activeNote.subject}</p>
           </div>
-          {/* Share button */}
-          <button
-            onClick={() => setShowShare(!showShare)}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-gray-500 text-sm hover:bg-gray-50 transition-colors duration-200"
-          >
-            👥 Share
-          </button>
+          {/* Action buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setShowShare(!showShare)}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-gray-200 text-gray-500 text-sm hover:bg-gray-50 transition-colors duration-200"
+            >
+              👥 Share
+            </button>
+            <button
+              onClick={handleDeleteNote}
+              className="flex items-center gap-2 px-4 py-2 rounded-lg border border-red-200 text-red-500 text-sm hover:bg-red-50 transition-colors duration-200"
+            >
+              🗑️ Delete
+            </button>
+          </div>
         </div>
 
         {/* Share Panel */}
