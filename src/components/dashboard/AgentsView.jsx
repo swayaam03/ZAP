@@ -69,7 +69,7 @@ const AGENT_SYSTEM_PROMPTS = {
     const taskList = tasks?.map(t => `"${t.title}" (${t.focusArea}, ${t.priority} priority)`).join('; ') || 'none'
     const currentStreak = profile?.currentStreak || 0
     
-    return `You are the Planning Agent for QuestMind, an AI habit-building platform.
+    return `You are the Planning Agent for ZAP, an AI habit-building platform.
 User: ${displayName}
 Focus areas: ${focusAreas}
 Rhythm: ${rhythm}
@@ -84,7 +84,7 @@ You help with daily planning, task prioritization, and scheduling. Be concise, p
     const level = profile?.level || 1
     const xp = profile?.xp || 0
     
-    return `You are the Support Agent for QuestMind.
+    return `You are the Support Agent for ZAP.
 User: ${displayName}
 Current streak: ${currentStreak} days
 Level: ${level}, XP: ${xp}
@@ -96,7 +96,7 @@ You provide emotional support, motivation, and encouragement. Be warm, empatheti
     const tasksWithHistory = tasks?.filter(t => t.completedDates?.length > 0).length || 0
     const topStreakTasks = tasks?.sort((a, b) => (b.streak || 0) - (a.streak || 0)).slice(0, 3).map(t => t.title).join(', ') || 'none'
     
-    return `You are the Insights Agent for QuestMind.
+    return `You are the Insights Agent for ZAP.
 User: ${displayName}
 Tasks with history: ${tasksWithHistory}
 Top streak tasks: ${topStreakTasks}
@@ -109,7 +109,7 @@ You analyze patterns and provide data-driven insights. Be analytical but accessi
     const longestStreak = profile?.longestStreak || 0
     const level = profile?.level || 1
     
-    return `You are the Momentum Agent for QuestMind.
+    return `You are the Momentum Agent for ZAP.
 User: ${displayName}
 Current streak: ${currentStreak} days
 Longest streak: ${longestStreak} days

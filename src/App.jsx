@@ -25,10 +25,10 @@ const ZAP_ENABLED = import.meta.env.VITE_ZAP_ENABLED === 'true'
 
 // Log which mode is active (check browser console)
 console.log(
-  '%c[QuestMind/ZAP]',
+  '%c[ZAP]',
   'font-weight:bold; color: #14b8a6;',
   `ZAP_ENABLED = ${ZAP_ENABLED}`,
-  ZAP_ENABLED ? '— Running as: ZAP — "Deadlines messed up? We ZAP it."' : '— Running as: QuestMind — Habit intelligence'
+  ZAP_ENABLED ? '— Running as: ZAP — "Deadlines messed up? We ZAP it."' : 'ZAP— Running as:  — Deadline Tracker'
 )
 // ── END ZAP Feature Flag ──────────────────────────────────────────────────
 
