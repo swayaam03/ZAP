@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { startOfMonth, endOfMonth, startOfWeek, endOfWeek, eachDayOfInterval, format, isSameMonth, isToday, parseISO } from 'date-fns'
 import { ChevronLeft, ChevronRight, AlertTriangle } from 'lucide-react'
+import { isTaskScheduledOnDate } from '../../utils/taskScheduler'
 
 export default function SmartCalendar({ tasks = [] }) {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -20,6 +21,11 @@ export default function SmartCalendar({ tasks = [] }) {
   const datesMap = useMemo(() => {
     const map = {}
     
+    calendarDays.forEach(day => {
+      const dateStr = format(day, dateFormat)
+      map[dateStr] = { active: [], completed: [] }
+    })
+
     tasks.forEach(task => {
       // If completed dates exist, we mark it on the days it was finished
       if (task.completedDates && task.completedDates.length > 0) {
@@ -29,17 +35,23 @@ export default function SmartCalendar({ tasks = [] }) {
         })
       }
       
-      // If it's active, we mark it on its start date (default to today if missing)
-      const isCompletedToday = (task.completedDates || []).includes(todayStr)
-      if (!isCompletedToday) {
-        const targetDate = task.startDate ? format(parseISO(task.startDate), dateFormat) : todayStr
-        if (!map[targetDate]) map[targetDate] = { active: [], completed: [] }
-        map[targetDate].active.push(task)
-      }
+      calendarDays.forEach(day => {
+        const dayStr = format(day, dateFormat)
+        
+        // Already completed on this specific day
+        if (map[dayStr] && map[dayStr].completed.includes(task)) return
+
+        if (isTaskScheduledOnDate(task, day)) {
+          if (!map[dayStr]) map[dayStr] = { active: [], completed: [] }
+          if (!map[dayStr].active.includes(task)) {
+            map[dayStr].active.push(task)
+          }
+        }
+      })
     })
 
     return map
-  }, [tasks, todayStr])
+  }, [tasks, todayStr, startDate.getTime(), endDate.getTime()])
 
   const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1))
   const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1))
@@ -89,7 +101,6 @@ export default function SmartCalendar({ tasks = [] }) {
           
           const dayTasks = datesMap[formattedDate] || { active: [], completed: [] }
           const totalTasks = dayTasks.active.length + dayTasks.completed.length
-          const isOverloaded = dayTasks.active.length >= 3
 
           return (
             <div
@@ -104,8 +115,8 @@ export default function SmartCalendar({ tasks = [] }) {
                 justifyContent: 'center',
                 padding: '4px',
                 position: 'relative',
-                background: isOverloaded ? '#fef2f2' : (isDayToday ? '#f0fdfa' : (isCurrentMonth ? '#f8fafc' : '#ffffff')),
-                border: isDayToday ? '1px solid #5eead4' : (isOverloaded ? '1px solid #fecaca' : '1px solid transparent'),
+                background: isDayToday ? '#f0fdfa' : (isCurrentMonth ? '#f8fafc' : '#ffffff'),
+                border: isDayToday ? '1px solid #5eead4' : '1px solid transparent',
                 opacity: isCurrentMonth ? 1 : 0.4,
                 transition: 'all 0.2s',
                 cursor: 'pointer' // Can add click filter handlers later
@@ -117,18 +128,11 @@ export default function SmartCalendar({ tasks = [] }) {
                   : format(day, 'MMM d')
               }
             >
-              {/* Overload Warning Icon */}
-              {isOverloaded && (
-                <div style={{ position: 'absolute', top: -4, right: -4, zIndex: 2 }}>
-                  <AlertTriangle size={12} fill="#ef4444" color="#fff" />
-                </div>
-              )}
-
               {/* Date Number */}
               <span style={{ 
                 fontSize: 12, 
                 fontWeight: isDayToday ? 700 : 500,
-                color: isOverloaded ? '#b91c1c' : (isDayToday ? '#0d9488' : '#475569'),
+                color: isDayToday ? '#0d9488' : '#475569',
                 marginBottom: 2
               }}>
                 {format(day, 'd')}
@@ -162,10 +166,6 @@ export default function SmartCalendar({ tasks = [] }) {
                   <div style={{ width: 6, height: 6, borderRadius: '50%', background: '#10b981' }} />
                   <span style={{ fontSize: 10, color: '#64748b' }}>Done</span>
               </div>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <AlertTriangle size={11} color="#3c454a" />
-              <span style={{ fontSize: 10, color: '#3c454a', fontWeight: 600 }}>Overloaded Tasks (3+)</span>
           </div>
       </div>
     </div>

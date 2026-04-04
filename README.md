@@ -1,5 +1,8 @@
 # ZAP — Smart Deadline Planner for Students 
 
+
+> AI-powered habit-tracking platform  
+> Theme: "Break the Loop, Create the Future" — Agentic AI Track
 > **"Deadlines messed up? We ZAP it."**
 
 ZAP is a student-focused productivity enhancement layer, Smart Deadline Planner for Students. It adds academic planning, deadline management, zero-clash scheduling, it detects procrastination by students and has AI-powered study assistance.
