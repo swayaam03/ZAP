@@ -28,10 +28,12 @@ export default function NotesPage() {
     return [...new Set(notes.map((n) => n.subject))].sort();
   }, [notes]);
 
-  const handleCreateNote = async () => {
-    if (!newTitle.trim() || !newSubject.trim()) return;
-    setCreating(true);
-    await addDoc(collection(db, 'notes'), {
+const handleCreateNote = async () => {
+  if (!newTitle.trim() || !newSubject.trim()) return;
+  setCreating(true);
+  try {
+    console.log('Creating note with userId:', userId);
+    const docRef = await addDoc(collection(db, 'notes'), {
       title:         newTitle.trim(),
       subject:       newSubject.trim(),
       content:       '',
@@ -39,11 +41,17 @@ export default function NotesPage() {
       lastEditedBy:  userId,
       updatedAt:     Date.now(),
     });
+    
+    console.log('Note created:', docRef.id);
     setNewTitle('');
     setNewSubject('');
     setShowNewNote(false);
+  } catch (err) {
+    console.error('Error creating note:', err);
+  } finally {
     setCreating(false);
-  };
+  }
+};
 
   const handleXPEarned = async () => {
     const xp = calculateFocusXP({ streakDays: profile?.currentStreak || 0 });
@@ -57,7 +65,7 @@ export default function NotesPage() {
     </div>
   );
 
-  if (showFocus) return <FocusMode onXPEarned={handleXPEarned} />;
+  if (showFocus) return <FocusMode onXPEarned={handleXPEarned} onExit={() => setShowFocus(false)} />;
 
   return (
     <div style={{ display: 'flex', height: 'calc(100vh - 4rem)', background: '#faf9f6' }}>

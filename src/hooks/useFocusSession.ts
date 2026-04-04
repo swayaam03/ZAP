@@ -1,11 +1,15 @@
 import { useState, useEffect, useRef } from 'react';
 
-const POMODORO_DURATION = 25 * 60; // 25 minutes
-
-export function useFocusSession(onComplete: () => void) {
-  const [secondsLeft, setSecondsLeft] = useState(POMODORO_DURATION);
+export function useFocusSession(onComplete: () => void, durationMinutes: number = 25) {
+  const [secondsLeft, setSecondsLeft] = useState(durationMinutes * 60);
   const [isActive, setIsActive] = useState(false);
   const intervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  // Reset timer when duration changes
+  useEffect(() => {
+    setSecondsLeft(durationMinutes * 60);
+    setIsActive(false);
+  }, [durationMinutes]);
 
   useEffect(() => {
     if (isActive) {
@@ -14,7 +18,7 @@ export function useFocusSession(onComplete: () => void) {
           if (s <= 1) {
             clearInterval(intervalRef.current!);
             setIsActive(false);
-            onComplete(); // logs XP
+            onComplete();
             return 0;
           }
           return s - 1;
@@ -26,7 +30,7 @@ export function useFocusSession(onComplete: () => void) {
 
   const start = () => setIsActive(true);
   const pause = () => setIsActive(false);
-  const reset = () => { setIsActive(false); setSecondsLeft(POMODORO_DURATION); };
+  const reset = () => { setIsActive(false); setSecondsLeft(durationMinutes * 60); };
 
   const minutes = String(Math.floor(secondsLeft / 60)).padStart(2, '0');
   const seconds = String(secondsLeft % 60).padStart(2, '0');
