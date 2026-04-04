@@ -15,7 +15,7 @@ const AGENTS = [
     sub: 'Daily priorities & scheduling',
     intro: (profile, tasks, streaks) => {
       const taskCount = tasks?.length || 0
-      return `I've reviewed your goal profile and completion history. You have ${taskCount} active tasks across your focus areas. Your daily plan is ready — sequenced by your energy patterns. Anything you'd like to adjust?`
+      return `I've reviewed your goal profile and completion history. You have ${taskCount} active tasks across your focus areas. Your daily plan is ready, sequenced by your energy patterns. Anything you'd like to adjust?`
     },
   },
   {
@@ -28,7 +28,7 @@ const AGENTS = [
     intro: (profile, tasks, streaks) => {
       const streak = profile?.currentStreak || 0
       return streak > 0
-        ? `You've completed ${streak} consecutive days. That's not willpower — that's identity. What's feeling difficult today?`
+        ? `You've completed ${streak} consecutive days. That's not willpower, that's identity. What's feeling difficult today?`
         : `Every habit starts somewhere. You're here, which means you're already ahead. What would you like to work on today?`
     },
   },

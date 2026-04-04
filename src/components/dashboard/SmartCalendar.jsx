@@ -164,8 +164,8 @@ export default function SmartCalendar({ tasks = [] }) {
               </div>
           </div>
           <div style={{ display: 'flex', alignItems: 'center', gap: 4 }}>
-              <AlertTriangle size={10} color="#ef4444" />
-              <span style={{ fontSize: 10, color: '#ef4444', fontWeight: 600 }}>Overloaded (3+)</span>
+              <AlertTriangle size={11} color="#3c454a" />
+              <span style={{ fontSize: 10, color: '#3c454a', fontWeight: 600 }}>Overloaded Tasks (3+)</span>
           </div>
       </div>
     </div>
