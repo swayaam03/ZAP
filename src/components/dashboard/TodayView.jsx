@@ -9,8 +9,8 @@ import TaskCard from '../tasks/TaskCard'
 import TaskModal from '../tasks/TaskModal'
 import WhatIfSimulatorModal from './WhatIfSimulatorModal'
 import { levelProgress, xpToNextLevel, getLevelTitle, xpToLevel } from '../../utils/xpCalculator'
-import AIAlert from './AIAlert'
 import SmartCalendar from './SmartCalendar'
+import { isTaskScheduledOnDate } from '../../utils/taskScheduler'
 
 const AREA_COLORS = {
   deepWork: '#14b8a6', health: '#10b981', learning: '#8b5cf6',
@@ -33,8 +33,9 @@ export default function TodayView() {
   const [editingTask, setEditingTask] = useState(null)
   const [xpFlash, setXpFlash] = useState(null)
 
-  const today = format(new Date(), 'yyyy-MM-dd')
-  const hour = new Date().getHours()
+  const now = new Date()
+  const today = format(now, 'yyyy-MM-dd')
+  const hour = now.getHours()
   const greeting = hour < 12 ? 'Good morning' : hour < 17 ? 'Good afternoon' : 'Good evening'
   const firstName = profile?.displayName?.split(' ')[0] || 'there'
   const xp = profile?.xp || 0
@@ -43,7 +44,10 @@ export default function TodayView() {
   const toNext = xpToNextLevel(xp)
   const streak = profile?.currentStreak || 0
 
-  const activeTasks = tasks.filter(t => !(t.completedDates || []).includes(today))
+  const activeTasks = tasks.filter(t => 
+    isTaskScheduledOnDate(t, now) && 
+    !(t.completedDates || []).includes(today)
+  )
   const completedToday = tasks.filter(t => (t.completedDates || []).includes(today))
   const dailyTarget = profile?.goals?.dailyTaskTarget || 5
   const pct = Math.min((completedToday.length / dailyTarget) * 100, 100)
@@ -74,7 +78,7 @@ export default function TodayView() {
   }
 
   return (
-    <div style={{ display: 'flex', gap: 32, padding: '28px 36px', maxWidth: 1080 }}>
+    <div style={{ display: 'flex', gap: 32, padding: '28px 36px', maxWidth: 1120 }}>
       {/* Main Column */}
       <div style={{ flex: 1, maxWidth: 720 }}>
 
@@ -324,8 +328,7 @@ export default function TodayView() {
       </div>
 
       {/* Right Column / Sidebar */}
-      <div style={{ width: 320, flexShrink: 0, paddingTop: 12 }}>
-        <AIAlert activeTasks={activeTasks} />
+      <div style={{ width: 360, flexShrink: 0, paddingTop: 12 }}>
         <SmartCalendar tasks={tasks} />
       </div>
     </div>
