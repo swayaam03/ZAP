@@ -24,7 +24,7 @@ export default function Auth() {
           {/* Wordmark */}
           <Link to="/" className="flex items-center gap-2 mb-1">
             <div className="w-2 h-2 rounded-full bg-brand-600" />
-            <span className="font-display text-lg font-medium text-ink tracking-tight">QuestMind</span>
+            <span className="font-display text-lg font-medium text-ink tracking-tight">ZAP</span>
           </Link>
           <p className="text-xs text-ink-dim mb-7 pl-4">Habit intelligence for professionals.</p>
 

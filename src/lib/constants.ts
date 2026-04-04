@@ -1,0 +1,1 @@
+export const ZAP_ENABLED = (import.meta.env as any).VITE_ZAP_ENABLED === 'true';

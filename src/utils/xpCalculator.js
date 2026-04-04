@@ -34,3 +34,9 @@ export function getLevelTitle(level) {
   if (level >= 2)   return 'Apprentice'
   return 'Newcomer'
 }
+const FOCUS_SESSION_XP = 12;
+
+export function calculateFocusXP({ streakDays = 0 }) {
+  const mult = streakBonus(streakDays);
+  return Math.round(FOCUS_SESSION_XP * mult);
+}

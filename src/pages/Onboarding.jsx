@@ -71,7 +71,7 @@ export default function Onboarding() {
         {/* Logo */}
         <div style={{ display:'flex', alignItems:'center', gap:8, marginBottom:6 }}>
           <div style={{ width:8, height:8, borderRadius:'50%', background:'#14b8a6' }} />
-          <span style={{ fontFamily:'Fraunces, Georgia, serif', fontSize:18, color:'#0f172a' }}>QuestMind</span>
+          <span style={{ fontFamily:'Fraunces, Georgia, serif', fontSize:18, color:'#0f172a' }}>ZAP</span>
         </div>
         <p style={{ fontSize:12, color:'#94a3b8', marginBottom:36 }}>A cleaner way to build consistency</p>
 
@@ -104,7 +104,7 @@ export default function Onboarding() {
           onBlur={e => e.target.style.borderColor = '#e2e8f0'}
         />
         <p style={{ fontSize:13, color:'#64748b', lineHeight:1.7, marginBottom:28 }}>
-          QuestMind learns your patterns and surfaces what matters most each day — without the noise.
+          ZAP learns your rhythm and auto-focuses your day — zero noise, just clear priorities.
         </p>
         <button
           onClick={() => data.displayName.trim() && next()}
@@ -283,7 +283,7 @@ export default function Onboarding() {
         >
           {saving
             ? <><div style={{ width:14, height:14, border:'2px solid rgba(255,255,255,0.3)', borderTopColor:'#fff', borderRadius:'50%', animation:'spin 0.7s linear infinite' }} /> Setting up…</>
-            : 'Open QuestMind'
+            : 'Open ZAP'
           }
         </button>
       </div>

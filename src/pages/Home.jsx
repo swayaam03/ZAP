@@ -29,7 +29,7 @@ export default function Home() {
           className="max-w-2xl"
         >
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-brand-100 text-brand-700 rounded-full text-xs font-medium mb-6">
-            <Zap size={12} /> IT-SA-HACk
+            <Zap size={12} />  Habit Intelligence For Students.
           </div>
 
           <h1 className="font-display text-5xl font-light tracking-tight text-ink leading-tight mb-4">
@@ -38,8 +38,7 @@ export default function Home() {
           </h1>
 
           <p className="text-lg text-ink-sub font-light mb-10 leading-relaxed">
-            ZAP turns your daily habits into measurable progress.
-            Track streaks, earn XP, and unlock your potential with AI-powered insights.
+            ZAP turns your daily tasks into measurable progress. Prevent clashes, optimize your schedule, and unlock your potential with AI-powered insights.
           </p>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center mb-16">
@@ -80,7 +79,7 @@ export default function Home() {
       </main>
 
       <footer className="text-center py-6 text-xs text-ink-dim border-t border-gray-100">
-        QuestMind · St. Francis Institute of Technology · Hackanova 5.0
+        ZAP · St. Francis Institute of Technology 
       </footer>
     </div>
   )
