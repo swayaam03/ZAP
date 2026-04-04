@@ -18,7 +18,7 @@ const AREA_COLORS = {
 }
 
 const INSIGHT_MSGS = [
-  'Completing a health task first boosts your learning completion — based on your pattern data.',
+  'Completing a health task first boosts your learning completion, based on your pattern data.',
   "You're most consistent in the morning. Protect that window today.",
   'Your streak is your strongest asset right now. One task at a time.',
   'Tasks with clear descriptions get completed 2× more often.',
@@ -123,7 +123,7 @@ export default function TodayView() {
       {/* Stats row */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3,1fr)', gap: 12, marginBottom: 20 }}>
         {[
-          { label: 'Current streak', value: streak > 0 ? `🔥 ${streak}d` : '—' },
+          { label: 'Current streak', value: streak > 0 ? `🔥 ${streak}d` : '~' },
           { label: 'XP total', value: xp.toLocaleString() },
           { label: 'Level', value: `${level} · ${getLevelTitle(level)}` },
         ].map((s, i) => (

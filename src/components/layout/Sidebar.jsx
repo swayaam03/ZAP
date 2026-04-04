@@ -115,7 +115,7 @@ export default function Sidebar({ onProfileOpen }) {
             <div style={{ width:8, height:8, borderRadius:'50%', background:'#14b8a6' }} />
             <span style={{
               fontFamily:'Fraunces, Georgia, serif',
-              fontSize:17, color:'#0f172a', fontWeight:400, letterSpacing:'-0.02em',
+              fontSize:21, color:'#0f172a', fontWeight:400, letterSpacing:'-0.02em',
             }}>
               ZAP
             </span>
