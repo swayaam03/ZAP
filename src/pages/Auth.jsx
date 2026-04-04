@@ -26,7 +26,7 @@ export default function Auth() {
             <div className="w-2 h-2 rounded-full bg-brand-600" />
             <span className="font-display text-lg font-medium text-ink tracking-tight">ZAP</span>
           </Link>
-          <p className="text-xs text-ink-dim mb-7 pl-4">Habit intelligence for professionals.</p>
+          <p className="text-xs text-ink-dim mb-7 pl-4">Habit intelligence for Students.</p>
 
           <AnimatePresence mode="wait">
             {view === 'login' && (
