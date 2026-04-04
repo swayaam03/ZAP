@@ -78,7 +78,7 @@ const handleCreateNote = async () => {
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
           <h2 style={{ fontFamily: 'Georgia, serif', fontSize: 20, color: '#0f172a', margin: 0 }}>
-            📚 My Notebooks
+           My Notebooks
           </h2>
         </div>
 
@@ -88,23 +88,23 @@ const handleCreateNote = async () => {
             onClick={() => setShowNewNote(!showNewNote)}
             style={{
               width: '100%', padding: '9px 12px', borderRadius: 8,
-              background: '#0d9488', color: '#fff', border: 'none',
+              background: '#0cbbac', color: '#fff', border: 'none',
               fontSize: 13, fontWeight: 600, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center',
             }}
           >
-            ✏️ New Note
+           New Note
           </button>
           <button
             onClick={() => setShowFocus(true)}
             style={{
               width: '100%', padding: '9px 12px', borderRadius: 8,
-              background: '#1e293b', color: '#fff', border: 'none',
+              background: '#0cbbac', color: '#fff', border: 'none',
               fontSize: 13, fontWeight: 600, cursor: 'pointer',
               display: 'flex', alignItems: 'center', gap: 6, justifyContent: 'center',
             }}
           >
-            ⚡ Focus Mode
+            Focus Mode
           </button>
         </div>
 
