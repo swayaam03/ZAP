@@ -177,8 +177,8 @@ export default function TodayView() {
             onClick={() => setSimulatorOpen(true)}
             style={{
               display: 'flex', alignItems: 'center', gap: 5, padding: '5px 12px', borderRadius: 8,
-              background: '#fef3c7', border: '1px solid #fde68a', color: '#d97706', fontSize: 12,
-              fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
+              background: '#cd7abc', border: '1px solid #d36a94', color: '#f7f6f6', fontSize: 12,
+              fontWeight: 400, cursor: 'pointer', fontFamily: 'inherit',
             }}
           >
             🔮 Simulate Delay
