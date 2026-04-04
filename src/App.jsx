@@ -73,7 +73,6 @@ function AppRoutes() {
   <Route path="/" element={<Home />} />
   <Route path="/auth" element={<PublicRoute><Auth /></PublicRoute>} />
   <Route path="/onboarding" element={<OnboardingRoute><Onboarding /></OnboardingRoute>} />
-  <Route path="/notes" element={<NotesPage />} />
 
   <Route path="/dashboard" element={<PrivateRoute><Layout /></PrivateRoute>}>
     <Route index element={<TodayView />} />
@@ -82,7 +81,7 @@ function AppRoutes() {
     <Route path="insights" element={<InsightsView />} />
     <Route path="agents" element={<AgentsView />} />
     <Route path="ai-solver" element={<AISolver />} />
-
+    <Route path="notes" element={<NotesPage />} />
   </Route>
 
   <Route path="*" element={<Navigate to="/" replace />} />

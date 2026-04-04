@@ -2,6 +2,7 @@ import { useState, useMemo, useEffect } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { X, Calendar, ArrowRight, Zap, AlertTriangle, CheckCircle2 } from 'lucide-react'
 import { format, addDays, parseISO, differenceInDays } from 'date-fns'
+import { simulateScheduleImpact } from '../../services/aiService'
 
 export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) {
   const [selectedTaskId, setSelectedTaskId] = useState('')
@@ -9,6 +10,7 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
   const [simulated, setSimulated] = useState(false)
   const [applying, setApplying] = useState(false)
   const [isAnalyzing, setIsAnalyzing] = useState(false)
+  const [simulationResults, setSimulationResults] = useState(null)
 
   // Reset state when opened
   useEffect(() => {
@@ -17,6 +19,7 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
       setDelayDays(1)
       setSimulated(false)
       setIsAnalyzing(false)
+      setSimulationResults(null)
     }
   }, [open])
 
@@ -35,80 +38,55 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
     return 0
   }
 
-  // Simulation Logic
-  const simulationResults = useMemo(() => {
-    if (!selectedTaskId || !simulated) return null
+  // Simulation Logic via AI
+  const runSimulation = async () => {
+    if (!selectedTaskId) return
+    setIsAnalyzing(true)
+    setSimulated(false)
+    setSimulationResults(null)
 
-    const targetTask = activeTasks.find(t => t.id === selectedTaskId)
-    if (!targetTask) return null
+    try {
+      const targetTask = activeTasks.find(t => t.id === selectedTaskId)
+      if (!targetTask) return
 
-    const originalDateParams = targetTask.startDate ? parseISO(targetTask.startDate) : new Date()
-    const originalDateStr = format(originalDateParams, 'yyyy-MM-dd')
-    const delayedDate = addDays(originalDateParams, delayDays)
-    const delayedDateStr = format(delayedDate, 'yyyy-MM-dd')
+      const originalDateParams = targetTask.startDate ? parseISO(targetTask.startDate) : new Date()
+      const originalDateStr = format(originalDateParams, 'yyyy-MM-dd')
+      const delayedDate = addDays(originalDateParams, delayDays)
+      const delayedDateStr = format(delayedDate, 'yyyy-MM-dd')
 
-    // Workload per day BEFORE
-    const beforeWorkloads = {}
-    activeTasks.forEach(t => {
-      const d = t.startDate || today
-      beforeWorkloads[d] = (beforeWorkloads[d] || 0) + parseTime(t.estimatedTime)
-    })
+      // Workload per day BEFORE
+      const beforeWorkloads = {}
+      activeTasks.forEach(t => {
+        const d = t.startDate || today
+        beforeWorkloads[d] = (beforeWorkloads[d] || 0) + parseTime(t.estimatedTime)
+      })
 
-    // Workload per day AFTER
-    const afterWorkloads = { ...beforeWorkloads }
-    const taskMinutes = parseTime(targetTask.estimatedTime)
-    afterWorkloads[originalDateStr] -= taskMinutes
-    afterWorkloads[delayedDateStr] = (afterWorkloads[delayedDateStr] || 0) + taskMinutes
+      // Workload per day AFTER
+      const afterWorkloads = { ...beforeWorkloads }
+      const taskMinutes = parseTime(targetTask.estimatedTime)
+      afterWorkloads[originalDateStr] -= taskMinutes
+      afterWorkloads[delayedDateStr] = (afterWorkloads[delayedDateStr] || 0) + taskMinutes
 
-    // Detect Issues
-    const issues = []
-    const THRESHOLD = 360 // 6 hours
-    
-    let originalRisk = beforeWorkloads[delayedDateStr] > THRESHOLD ? 80 : Math.min((beforeWorkloads[delayedDateStr] || 0) / THRESHOLD * 50, 50)
-    let newRisk = afterWorkloads[delayedDateStr] > THRESHOLD ? 85 : Math.min((afterWorkloads[delayedDateStr] || 0) / THRESHOLD * 50, 50)
+      const workloads = { originalDateStr, delayedDateStr, beforeWorkloads, afterWorkloads }
 
-    if (afterWorkloads[delayedDateStr] > THRESHOLD) {
-      issues.push(`Overload Warning: Target day workload exceeds 6 hours (${Math.round(afterWorkloads[delayedDateStr] / 60)}h)`)
+      // Fetch dynamic insights
+      const aiInsights = await simulateScheduleImpact(targetTask, delayDays, activeTasks, workloads)
+
+      setSimulationResults({
+        targetTask,
+        originalDateStr,
+        delayedDateStr,
+        beforeWorkloads,
+        afterWorkloads,
+        ...aiInsights
+      })
+    } catch (e) {
+      console.error(e)
+    } finally {
+      setIsAnalyzing(false)
+      setSimulated(true)
     }
-
-    if (afterWorkloads[delayedDateStr] > (beforeWorkloads[delayedDateStr] || 0) + 120) {
-      issues.push(`Significant spike: Adding ${Math.round(taskMinutes/60)}h to an already busy schedule.`)
-    }
-
-    // Smart Suggestions: find a day within +7 days with minimum workload
-    let bestDayStr = delayedDateStr
-    let minWorkload = afterWorkloads[delayedDateStr] || 0
-    for (let i = 0; i <= 7; i++) {
-        const checkDay = format(addDays(originalDateParams, i), 'yyyy-MM-dd')
-        const w = (beforeWorkloads[checkDay] || 0)
-        // Only suggest if it's a future day and workload gets better
-        if (checkDay !== originalDateStr && checkDay !== delayedDateStr && w < minWorkload) {
-            minWorkload = w
-            bestDayStr = checkDay
-        }
-    }
-    
-    let suggestion = ""
-    if (bestDayStr !== delayedDateStr && issues.length > 0) {
-        suggestion = `Consider moving this to ${format(parseISO(bestDayStr), 'EEEE, MMM d')} instead. Workload is lighter (${Math.round(minWorkload/60)}h).`
-    } else if (issues.length === 0) {
-        suggestion = "This delay looks safe. Your schedule remains balanced."
-    }
-
-    return {
-      targetTask,
-      originalDateStr,
-      delayedDateStr,
-      beforeWorkloads,
-      afterWorkloads,
-      issues,
-      originalRisk,
-      newRisk,
-      suggestion,
-      bestDayStr
-    }
-
-  }, [selectedTaskId, simulated, delayDays, activeTasks])
+  }
 
   const handleApply = async () => {
     if (!simulationResults) return
@@ -231,13 +209,7 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
 
                     <button
                         disabled={!selectedTaskId || applying}
-                        onClick={() => {
-                            setIsAnalyzing(true)
-                            setTimeout(() => {
-                                setIsAnalyzing(false)
-                                setSimulated(true)
-                            }, 1200)
-                        }}
+                        onClick={runSimulation}
                         style={{
                             width: '100%', padding: '12px', borderRadius: 12, border: 'none',
                             background: selectedTaskId ? '#8b5cf6' : '#e2e8f0',
@@ -278,28 +250,44 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
                             borderRadius: 12, border: simulationResults.issues.length ? '1px solid #fecaca' : '1px solid #bbf7d0',
                             marginBottom: 20
                          }}>
-                            <div>
-                                <h3 style={{ margin: 0, fontSize: 13, fontWeight: 800, color: simulationResults.issues.length ? '#b91c1c' : '#166534', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                                    {simulationResults.issues.length ? 'Conflict Detected' : 'Safe to Delay'}
-                                </h3>
-                                <p style={{ margin: '4px 0 0', fontSize: 12, color: simulationResults.issues.length ? '#dc2626' : '#15803d' }}>
-                                    Risk Score: {Math.round(simulationResults.originalRisk)}% → <strong>{Math.round(simulationResults.newRisk)}%</strong>
-                                </p>
-                            </div>
-                            {simulationResults.issues.length ? <AlertTriangle size={24} color="#ef4444" /> : <CheckCircle2 size={24} color="#22c55e" />}
+                             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', minWidth: '100%', gap: 12 }}>
+                                 <div>
+                                     <h3 style={{ margin: 0, fontSize: 13, fontWeight: 800, color: simulationResults.issues?.length ? '#b91c1c' : '#166534', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+                                         {simulationResults.issues?.length ? 'Conflict Detected' : 'Safe to Delay'}
+                                     </h3>
+                                     <p style={{ margin: '4px 0 0', fontSize: 12, color: simulationResults.issues?.length ? '#dc2626' : '#15803d' }}>
+                                         Risk Score: {Math.round(simulationResults.originalRisk)}% → <strong>{Math.round(simulationResults.newRisk)}%</strong>
+                                     </p>
+                                 </div>
+                                 {simulationResults.issues?.length ? <AlertTriangle size={24} color="#ef4444" style={{flexShrink: 0}} /> : <CheckCircle2 size={24} color="#22c55e" style={{flexShrink: 0}} />}
+                             </div>
                          </motion.div>
 
                         {/* Impact Details */}
-                        {simulationResults.issues.length > 0 && (
+                        {simulationResults.issues && simulationResults.issues.length > 0 && (
                             <motion.div initial={{ y: 10, opacity: 0 }} animate={{ y: 0, opacity: 1 }} transition={{ delay: 0.2 }} style={{ marginBottom: 20 }}>
                                 <h4 style={{ margin: '0 0 10px', fontSize: 13, fontWeight: 600, color: '#475569' }}>Impact Analysis</h4>
                                 <ul style={{ margin: 0, padding: 0, listStyle: 'none', display: 'flex', flexDirection: 'column', gap: 8 }}>
                                     {simulationResults.issues.map((iss, i) => (
                                         <li key={i} style={{ fontSize: 13, color: '#0f172a', display: 'flex', gap: 8, alignItems: 'flex-start' }}>
-                                            <span style={{ color: '#ef4444' }}>•</span> {iss}
+                                            <span style={{ color: '#ef4444', flexShrink: 0 }}>•</span> 
+                                            <span>{iss}</span>
                                         </li>
                                     ))}
                                 </ul>
+                                
+                                {simulationResults.impactedTasks && simulationResults.impactedTasks.length > 0 && (
+                                    <div style={{ marginTop: 16, padding: 12, background: '#fef2f2', borderRadius: 8, border: '1px solid #fee2e2' }}>
+                                         <p style={{ margin: '0 0 8px', fontSize: 12, fontWeight: 600, color: '#991b1b' }}>Tasks Impacted:</p>
+                                         <div style={{ display: 'flex', flexWrap: 'wrap', gap: 6 }}>
+                                            {simulationResults.impactedTasks.map((t, i) => (
+                                                <span key={i} style={{ padding: '4px 10px', background: '#fff', border: '1px solid #fca5a5', borderRadius: 12, fontSize: 11, fontWeight: 600, color: '#991b1b' }}>
+                                                    {t}
+                                                </span>
+                                            ))}
+                                         </div>
+                                    </div>
+                                )}
                             </motion.div>
                         )}
 
@@ -362,9 +350,9 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
                                  <p style={{ margin: 0, fontSize: 13, color: '#334155', lineHeight: 1.5 }}>
                                      {simulationResults.suggestion}
                                  </p>
-                                 {simulationResults.issues.length > 0 && simulationResults.bestDayStr !== simulationResults.delayedDateStr && (
+                                 {simulationResults.issues?.length > 0 && simulationResults.bestAlternativeDay && (
                                      <button 
-                                        onClick={() => handleSuggestApply(simulationResults.bestDayStr)}
+                                        onClick={() => handleSuggestApply(simulationResults.bestAlternativeDay)}
                                         style={{ 
                                             background: '#fff', border: '1px solid #e2e8f0', borderRadius: 6,
                                             padding: '4px 10px', fontSize: 11, fontWeight: 600, color: '#0f172a',
@@ -374,7 +362,7 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
                                         onMouseEnter={e => e.currentTarget.style.borderColor = '#94a3b8'}
                                         onMouseLeave={e => e.currentTarget.style.borderColor = '#e2e8f0'}
                                      >
-                                         <Zap size={11} color="#eab308" /> Move to {format(parseISO(simulationResults.bestDayStr), 'EEEE')} instead
+                                         <Zap size={11} color="#eab308" /> Move to {format(parseISO(simulationResults.bestAlternativeDay), 'EEEE')} instead
                                      </button>
                                  )}
                              </div>
@@ -396,13 +384,13 @@ export default function WhatIfSimulatorModal({ open, onClose, tasks, onApply }) 
                                 onClick={handleApply}
                                 style={{
                                     flex: 1, padding: '12px', borderRadius: 12, border: 'none',
-                                    background: simulationResults.issues.length > 0 ? '#ef4444' : '#10b981', 
+                                    background: simulationResults.issues?.length > 0 ? '#ef4444' : '#10b981', 
                                     color: '#fff', fontSize: 14, fontWeight: 600, cursor: 'pointer', fontFamily: 'inherit',
                                     transition: 'all 0.2s',
                                     opacity: applying ? 0.7 : 1
                                 }}
                             >
-                                {applying ? 'Applying...' : (simulationResults.issues.length > 0 ? 'Proceed Anyway' : 'Apply Changes')}
+                                {applying ? 'Applying...' : (simulationResults.issues?.length > 0 ? 'Proceed Anyway' : 'Apply Changes')}
                             </button>
                         </motion.div>
                     </motion.div>

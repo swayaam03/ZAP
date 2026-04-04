@@ -12,7 +12,7 @@ const NAV = [
   { to: '/dashboard/insights',  icon: Lightbulb,       label: 'Insights',  end: false },
   { to: '/dashboard/agents',    icon: Bot,             label: 'Agents',    end: false },
   { to: '/dashboard/ai-solver', icon: Brain,           label: 'AI Solver', end: false },
-  ...(ZAP_ENABLED ? [{ to: '/dashboard/notes', icon: BookOpen, label: 'Notes', end: false }] : []),
+  { to: '/dashboard/notes',     icon: BookOpen,        label: 'Notes',     end: false },
 ]
 
 function SignOutModal({ onConfirm, onCancel }) {
