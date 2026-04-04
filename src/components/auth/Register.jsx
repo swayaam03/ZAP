@@ -1,14 +1,30 @@
+// FILE: src/components/auth/Register.jsx
+// ACTION: Replace Entire
+// QUESTMIND INTEGRATION: Adds student profile fields + saves via useStudentProfile hook
+
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { motion } from 'framer-motion'
 import { useAuth } from '../../hooks/useAuth'
+import { useStudentProfile } from '../../hooks/useStudentProfile'
 import { validate, friendlyAuthError, passwordStrength } from '../../utils/validation'
 
 export default function Register({ onSwitchToLogin }) {
   const { register, loginGoogle } = useAuth()
+  const { updateProfile: updateStudentProfile } = useStudentProfile()
   const navigate = useNavigate()
 
-  const [form, setForm] = useState({ displayName: '', email: '', password: '', confirmPw: '' })
+  const [form, setForm] = useState({ 
+    displayName: '', 
+    email: '', 
+    password: '', 
+    confirmPw: '',
+    // ZAP student fields
+    school: '',
+    major: '',
+    year: 'freshman',
+    expectedGraduation: '',
+  })
   const [errors,    setErrors]    = useState({})
   const [serverErr, setServerErr] = useState('')
   const [loading,   setLoading]   = useState(false)
@@ -26,17 +42,42 @@ export default function Register({ onSwitchToLogin }) {
   const handleSubmit = async (e) => {
     e?.preventDefault()
     setServerErr('')
+    
+    // Validate existing fields
     const errs = {}
     const nm = validate.displayName(form.displayName); if (nm) errs.displayName = nm
     const em = validate.email(form.email);             if (em) errs.email = em
     const pw = validate.password(form.password);       if (pw) errs.password = pw
     const cp = validate.confirmPassword(form.confirmPw, form.password); if (cp) errs.confirmPw = cp
     if (!agreed) errs.terms = 'You must accept the terms to continue'
+    
+    // Validate ZAP student fields (optional but recommended)
+    if (!form.school.trim()) errs.school = 'School is required'
+    if (!form.major.trim()) errs.major = 'Major is required'
+    
     if (Object.keys(errs).length) { setErrors(errs); return }
 
     setLoading(true)
     try {
-      await register({ displayName: form.displayName, email: form.email, password: form.password })
+      // 1. Create auth account
+      const userCredential = await register({ 
+        displayName: form.displayName, 
+        email: form.email, 
+        password: form.password 
+      })
+      
+      // 2. Save student profile to Firestore (ZAP Block 1)
+      if (userCredential?.user?.uid) {
+        await updateStudentProfile({
+          school: form.school.trim(),
+          major: form.major.trim(),
+          year: form.year,
+          expectedGraduation: form.expectedGraduation,
+          courseLoad: 0, // Default
+          semester: '',  // Can be auto-set later
+        })
+      }
+      
       navigate('/dashboard', { replace: true })
     } catch (err) {
       setServerErr(friendlyAuthError(err))
@@ -128,6 +169,59 @@ export default function Register({ onSwitchToLogin }) {
             {errors.email && <p style={{ fontSize: 11, color: '#dc2626', marginTop: 3 }}>⚠ {errors.email}</p>}
           </div>
         </div>
+
+        {/* ZAP Student Fields - NEW */}
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12, marginTop: 4 }}>
+          <div>
+            <label style={labelStyle}>School / University</label>
+            <input
+              placeholder="e.g., Stanford University"
+              value={form.school}
+              onChange={e => set('school', e.target.value)}
+              style={inputStyle(errors.school)}
+            />
+            {errors.school && <p style={{ fontSize: 11, color: '#dc2626', marginTop: 3 }}>⚠ {errors.school}</p>}
+          </div>
+          <div>
+            <label style={labelStyle}>Major / Field of Study</label>
+            <input
+              placeholder="e.g., Computer Science"
+              value={form.major}
+              onChange={e => set('major', e.target.value)}
+              style={inputStyle(errors.major)}
+            />
+            {errors.major && <p style={{ fontSize: 11, color: '#dc2626', marginTop: 3 }}>⚠ {errors.major}</p>}
+          </div>
+        </div>
+
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 12 }}>
+          <div>
+            <label style={labelStyle}>Academic Year</label>
+            <select
+              value={form.year}
+              onChange={e => set('year', e.target.value)}
+              style={inputStyle(errors.year)}
+            >
+              <option value="freshman">Freshman</option>
+              <option value="sophomore">Sophomore</option>
+              <option value="junior">Junior</option>
+              <option value="senior">Senior</option>
+              <option value="graduate">Graduate</option>
+            </select>
+            {errors.year && <p style={{ fontSize: 11, color: '#dc2626', marginTop: 3 }}>⚠ {errors.year}</p>}
+          </div>
+          <div>
+            <label style={labelStyle}>Expected Graduation</label>
+            <input
+              type="month"
+              value={form.expectedGraduation}
+              onChange={e => set('expectedGraduation', e.target.value)}
+              style={inputStyle(errors.expectedGraduation)}
+            />
+            {errors.expectedGraduation && <p style={{ fontSize: 11, color: '#dc2626', marginTop: 3 }}>⚠ {errors.expectedGraduation}</p>}
+          </div>
+        </div>
+        {/* END ZAP Student Fields */}
 
         {/* Password */}
         <div>

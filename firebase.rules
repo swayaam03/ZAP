@@ -1,0 +1,47 @@
+// FILE: firestore.rules
+// ACTION: Create New
+// QUESTMIND INTEGRATION: Adds studentProfile field access to existing rules
+
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+    
+    // Users collection: each user can only access their own data
+    match /users/{userId} {
+      allow read, write: if isOwner(userId);
+      
+      // Allow users to update their own studentProfile field
+      allow update: if isOwner(userId) && 
+        request.resource.data.keys().hasAll(['studentProfile']) == false ||
+        request.resource.data.studentProfile is map;
+      
+      // Existing QuestMind subcollections
+      match /tasks/{taskId} {
+        allow read, write: if isOwner(userId);
+      }
+      match /streaks/{streakId} {
+        allow read, write: if isOwner(userId);
+      }
+      match /agentChats/{agentType}/messages/{msgId} {
+        allow read, write: if isOwner(userId);
+      }
+    }
+    
+    // ZAP: Student profiles (stored within users/{userId} as a field, not separate collection)
+    // No separate collection needed — studentProfile is a field in users/{userId}
+    
+    // Public config (optional, for future ZAP features)
+    match /config/{docId} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
