@@ -1,4 +1,4 @@
-# ZAP 🧠
+# ZAP - student-focused productivity enhancement🧠
 
 
 > AI-powered habit-tracking platform  
