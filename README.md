@@ -1,82 +1,107 @@
-# ZAP — Smart Deadline Planner for Students 
+# ZAP 🧠
 
 
 > AI-powered habit-tracking platform  
 > Theme: "Break the Loop, Create the Future" — Agentic AI Track
 > **"Deadlines messed up? We ZAP it."**
+> **Deadlines messed up? We ZAP it.** 
 
-ZAP is a student-focused productivity enhancement layer, Smart Deadline Planner for Students. It adds academic planning, deadline management, zero-clash scheduling, it detects procrastination by students and has AI-powered study assistance.
+[![React](https://img.shields.io/badge/React-18-61dafb?logo=react&logoColor=white)](https://reactjs.org/)
+[![Vite](https://img.shields.io/badge/Vite-5.0-646cff?logo=vite&logoColor=white)](https://vitejs.dev/)
+[![Firebase](https://img.shields.io/badge/Firebase-Enabled-FFCA28?logo=firebase&logoColor=white)](https://firebase.google.com/)
+[![Tailwind CSS](https://img.shields.io/badge/Tailwind-4.0-38bdf8?logo=tailwindcss&logoColor=white)](https://tailwindcss.com/)
+[![License](https://img.shields.io/badge/License-MIT-blue)](LICENSE)
+
+## ✨  Features
+
+## 📖 Table of Contents
+
+- [Features](#-features)
+- [Tech Stack](#-tech-stack)
+- [Installation](#-installation)
+- [Environment Setup](#-environment-setup)
+- [Usage](#-usage)
+- [Project Structure](#-project-structure)
+- [Roadmap](#-roadmap)
+- [Team](#-team)
+- [Contributing](#-contributing)
+- [License](#-license)
+
+
+---
+## Features
+
+### Core Features
+- **Student Profile Management** - Track your school, major, and graduation
+- **Smart Task Management** - Organize tasks with priorities and deadlines
+- **Zero-Clash Detection** - Automatically detect conflicting deadlines
+- **Streak Tracking** - Build consistency with XP and level system
+- **Beautiful UI** - Clean, modern interface with Tailwind CSS
+
+- **Collaboration** - Group projects and shared workspaces
+- **Focus Mode** - Pomodoro timer and deep work sessions
+- **AI Insights** - Smart recommendations and study agents
+
 
 ---
 
-## 🚀 Quick Start
+## Tech Stack
 
-### Prerequisites
-- Node.js 18+ (`node -v`)
-- npm (`npm -v`)
-- Firebase account
+| Category | Technology |
+|----------|-----------|
+| **Frontend** | React 18, Vite |
+| **Styling** | Tailwind CSS v4 |
+| **Backend** | Firebase (Auth, Firestore) |
+| **State** | React Context, Zustand |
+| **Routing** | React Router v6 |
+| **UI** | Framer Motion, Lucide Icons |
 
-### Installation
 
-# 1. Clone the repository
+---
+## Installation
+
+```bash
+# Clone the repository
 git clone https://github.com/aarushi2512/ZAP.git
 cd ZAP
 
-# 2. Install dependencies
+# Install dependencies
 npm install
 
-# 3. Create .env file (copy from .env.example)
+# Create environment file
 cp .env.example .env
 
-# 4. Fill in your Firebase credentials in .env
-
-# 5. Start development server
+# Edit .env with your Firebase credentials
 npm run dev
 
+ZAP is a student-focused productivity enhancement layer, Smart Deadline Planner for Students. It adds academic planning, deadline management, zero-clash scheduling, it detects procrastination by students and has AI-powered study assistance.
 
-📦 Project Structure
+
+## Project Structure
 ZAP/
-├── src/
-│   ├── components/
+├──  src/
+│   ├── 📂 components/       # React components
 │   │   ├── auth/           # Login, Register, Onboarding
-│   │   ├── dashboard/      # TodayView, ProgressView, InsightsView, AgentsView
+│   │   ├── dashboard/      # Today, Progress, Insights, Agents
 │   │   ├── layout/         # Sidebar, Layout, Header
 │   │   └── tasks/          # TaskCard, TaskModal, TaskList
-│   ├── hooks/
-│   │   ├── useAuth.js      # Authentication hook
-│   │   ├── useTasks.js     # Task management hook
-│   │   ├── useStreaks.js   # Streak tracking hook
-│   │   ├── useStudentProfile.js  # ZAP: Student profile hook
-│   │   └── useClashDetection.js  # ZAP: Deadline clash detection
-│   ├── services/
-│   │   ├── taskService.js  # Firestore task operations
-│   │   └── aiService.js    # AI agent integrations
-│   ├── store/
-│   │   └── collabStore.ts  # ZAP: Collaboration state (Zustand)
-│   ├── types/
-│   │   ├── student.js      # ZAP: StudentProfile type definition
-│   │   └── task.js         # ZAP: Extended Task schema
-│   ├── utils/
-│   │   ├── xpCalculator.js # XP and level calculations
-│   │   └── validation.js   # Form validation utilities
-│   ├── contexts/
-│   │   ├── AuthContext.jsx
-│   │   └── ThemeContext.jsx
-│   ├── pages/
-│   │   ├── Auth.jsx
-│   │   ├── Home.jsx
-│   │   └── Onboarding.jsx
-│   ├── App.jsx             # Main app with routing
-│   └── main.jsx            # Entry point
-├── public/
-├── firestore.rules         # ZAP: Firestore security rules
-├── .env                    # Environment variables (DO NOT COMMIT)
-├── .env.example            # Environment template (SAFE TO COMMIT)
+│   ├── 📂 hooks/           # Custom React hooks
+│   ├── 📂 services/        # Firebase & API services
+│   ├── 📂 store/           # State management (Zustand)
+│   ├── 📂 types/           # Type definitions
+│   ├── 📂 utils/           # Helper functions
+│   ├── 📂 contexts/        # React contexts
+│   └──  pages/           # Page components
+├── 📂 public/              # Static assets
+├── firestore.rules         # Firebase security rules
+├── .env.example            # Environment template
 ├── package.json
 └── README.md
 
-🚀 Usage
-# Development
+
+## Usage
+```bash
+# Development server
 npm run dev
 
 # Build for production
@@ -84,62 +109,73 @@ npm run build
 
 # Preview production build
 npm run preview
-
-🛠️ Tech Stack
-Frontend: React 18, Vite
-Styling: Tailwind CSS v4
-Backend: Firebase (Auth, Firestore)
-State Management: React Context, Zustand
-Routing: React Router v6
-Animations: Framer Motion
-
-📋 Features
-Block 1: Foundation 
-Student profile management
-Extended registration with academic details
-Firestore security rules
-Feature flag system
-
-Block 2: Zero-Clash Engine (In Progress)
-Deadline tracking
-Clash detection
-Priority management
-
-Block 3: Collaboration 
-Group project management
-Shared notes and resources
-Team task assignments
-Role-based permissions
-Collaborative workspaces
-
-Block 4: Focus Mode ⏳
-Pomodoro timer integration
-Focus session tracking
-Distraction blocking
-Deep work scheduling
-Session analytics
-
-Block 5: AI & Insights ⏳
-AI-powered study agents
-Predictive performance insights
-Personalized recommendations
-Smart rescheduling suggestions
-Learning pattern analysis
-
-🤝 Contributing
-Fork the repository
-Create your feature branch (git checkout -b feature/AmazingFeature)
-Commit your changes (git commit -m 'Add some AmazingFeature')
-Push to the branch (git push origin feature/AmazingFeature)
-Open a Pull Request
-
-👥 Team
-Aarushi Arora 
-Swayam Kandarkar
-Dhvani Mistry
-Prishita Mali
+```
 
 
-🙏 Acknowledgments
-Icons by Lucide React
-UI components with Framer Motion
+## Features
+
+### Block 1: Foundation 
+- Student profile management (school, major, year, graduation)
+- Extended registration with academic details
+- Firestore security rules
+- Feature flag system (ZAP_ENABLED)
+- XP and level tracking
+
+### Block 2: Zero-Clash Engine 
+- Deadline tracking for tasks
+- Automatic clash detection
+- Priority management (critical, high, medium, low)
+- Time estimation per task
+- Urgency indicators
+
+### Block 3: Collaboration 
+- Group project management
+- Shared notes and resources
+- Team task assignments
+- Role-based permissions
+- Collaborative workspaces
+
+### Block 4: Focus Mode 
+- Pomodoro timer integration
+- Focus session tracking
+- Distraction blocking
+- Deep work scheduling
+- Session analytics
+
+### Block 5: AI & Insights 
+- AI-powered study agents
+- Predictive performance insights
+- Personalized recommendations
+- Smart rescheduling suggestions
+- Learning pattern analysis
+
+
+## Roadmap
+
+- [ ] Block 1: Foundation
+- [ ] Block 2: Zero-Clash Engine 
+- [ ] Block 3: Collaboration
+- [ ] Block 4: Focus Mode
+- [ ] Block 5: AI & Insights
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch: `git checkout -b feature/your-feature`
+3. Commit your changes: `git commit -m 'Add feature'`
+4. Push to the branch: `git push origin feature/your-feature`
+5. Open a Pull Request
+
+## Team
+
+- **Aarushi Arora** - [@aarushi2512](https://github.com/aarushi2512)
+- **Swayam Kandarkar**
+- **Dhvani Mistry**
+- **Prishita Mali**
+
+
+## Acknowledgments
+
+- Icons by Lucide React
+- UI components with Framer Motion
+```

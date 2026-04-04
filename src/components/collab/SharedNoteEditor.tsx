@@ -14,15 +14,15 @@ export default function SharedNoteEditor({ userId }: { userId: string }) {
   const [shareMsg, setShareMsg]         = useState('');
   const [copied, setCopied]             = useState(false);
 
-  useEffect(() => {
-    if (!activeNote) return;
-    const unsub = onSnapshot(doc(db, 'notes', activeNote.id), (snap) => {
-      if (snap.exists()) {
-        updateNoteContent(activeNote.id, snap.data().content);
-      }
-    });
-    return () => unsub();
-  }, [activeNote?.id]);
+  // useEffect(() => {
+  //   if (!activeNote) return;
+  //   const unsub = onSnapshot(doc(db, 'notes', activeNote.id), (snap) => {
+  //     if (snap.exists()) {
+  //       updateNoteContent(activeNote.id, snap.data().content);
+  //     }
+  //   });
+  //   return () => unsub();
+  // }, [activeNote?.id]);
 
   const handleChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     if (!activeNote) return;

@@ -55,7 +55,7 @@ export default function Header({ title }) {
             }} />
           </div>
           <span style={{ fontSize:10, color: isDark ? '#64748b' : '#94a3b8' }}>
-            {toNext} XP
+            {xp} XP
           </span>
         </div>
 
