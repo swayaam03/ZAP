@@ -20,7 +20,7 @@ const PRIORITIES = ['critical', 'high', 'medium', 'low']
 const TIMES = ['15 min', '30 min', '1 hour', '2 hours', '3+ hours']
 const SCHEDULES = ['once', 'daily', 'weekdays', 'weekly', 'custom']
 const WEEKDAYS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-const PRIORITY_COLORS = { critical: '#dc2626', high: '#ef4444', medium: '#f59e0b', low: '#10b981' }
+const PRIORITY_COLORS = { critical: '#681717', high: '#ef4444', medium: '#f59e0b', low: '#10b981' }
 
 export default function TaskModal({ open, onClose, task = null }) {
   const { addTask, editTask } = useTasks()

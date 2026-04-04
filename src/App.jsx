@@ -81,7 +81,7 @@ function AppRoutes() {
     <Route path="insights" element={<InsightsView />} />
     <Route path="agents" element={<AgentsView />} />
     <Route path="ai-solver" element={<AISolver />} />
-    {/* <Route path="notes" element={<NotesPage />} /> */} {/* Comment out if NotesPage doesn't exist */}
+     <Route path="notes" element={<NotesPage />} /> 
   </Route>
 
   <Route path="*" element={<Navigate to="/" replace />} />
